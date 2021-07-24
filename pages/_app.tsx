@@ -1,0 +1,52 @@
+import IdentityProvider from 'components/identity';
+import { Layout } from 'components/layout';
+import { AppProps } from 'next/app';
+import { FunctionComponent } from 'react';
+import { createGlobalStyle } from 'styled-components';
+
+const GlobalStyle = createGlobalStyle`
+  :root {
+    --background_100: #E5E5E5;
+    --background_200: #FFFFFF;
+    --header_100: #3B3A47;
+    --header_text: #FFFFFF;
+    --content_text: #1A1A1A;
+    --header_active: #4B4A56;
+    --accent: #7594E1;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --background_100: #191F26;
+      --background_200: #1D222B;
+      --header_100: #21272F;
+      --header_text: #FFFFFF;
+      --content_text: #FFFFFF;
+      --header_active: #4A4E56;
+    }
+  }
+
+  html,
+  body {
+    padding: 0;
+    margin: 0;
+    height: 100%;
+    width: 100%;
+    background: var(--background_100);
+    color: var(--content_text);
+    font-family: 'Lato', sans-serif;
+  }
+`;
+
+const App: FunctionComponent<AppProps> = ({ Component, pageProps }) => {
+  return (
+    <IdentityProvider>
+      <Layout>
+        <GlobalStyle />
+        <Component {...pageProps} />
+      </Layout>
+    </IdentityProvider>
+  );
+};
+
+export default App;
