@@ -29,7 +29,7 @@ const Header: FC<Props> = ({ clicked }) => {
   return (
     <Head>
       <Brand>
-        <h3>Sugma</h3>
+        <h3 title="🥜 Short URLs Get More Attention">🥜 SUGMA</h3>
       </Brand>
       <Nav>
         <Link href="/" passHref>
@@ -79,6 +79,7 @@ const Head = styled.div`
   padding: 10px 20px;
   align-items: center;
   justify-content: center;
+  flex-wrap: wrap;
 `;
 
 const Brand = styled.div`
@@ -103,6 +104,13 @@ const Nav = styled.nav`
   max-width: 1000px;
   padding: 0 8px;
   border-bottom: 1px solid var(--header_active);
+
+  @media only screen and (max-width: 1080px) {
+    order: 1;
+    flex: 1;
+    flex-basis: 100%;
+    margin-top: 15px;
+  }
 `;
 
 const NavItem = styled.a`

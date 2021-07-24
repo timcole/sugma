@@ -59,7 +59,7 @@ const Body = styled.div`
 
   ${Section} {
     margin: 15px auto;
-    width: 100%;
+    width: calc(100% - 60px);
     max-width: 1000px;
     padding: 15px;
   }
