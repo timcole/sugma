@@ -11,6 +11,7 @@ export async function AccessMiddleware(
   host: string,
   auth: string,
 ): Promise<AccessPayload> {
+  if (!auth) return Promise.reject({ error: 'unauthorized' });
   const access = await isValidJwt(host, auth);
   if (!access) return Promise.reject({ error: 'unauthorized' });
 

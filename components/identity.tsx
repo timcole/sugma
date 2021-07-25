@@ -12,21 +12,19 @@ export const IdentityContext = createContext<Identity | null>(null);
 export const useIdentity = () => useContext(IdentityContext);
 
 const IdentityProvider: FC<{ children: ReactNode }> = ({ children }) => {
-  const [user, setUser] = useState<Identity>();
+  const [user, setUser] = useState<Identity | null>(null);
 
   useEffect(() => {
     fetch(`/api/me`)
       .then((data) => data.json())
       .then((data) => {
-        if (data.err || data.errno || !data.id) setUser(null);
+        if (!data.id) setUser(null);
         else setUser(data);
       });
   }, []);
 
   return (
-    <IdentityContext.Provider value={{ ...user }}>
-      {children}
-    </IdentityContext.Provider>
+    <IdentityContext.Provider value={user}>{children}</IdentityContext.Provider>
   );
 };
 

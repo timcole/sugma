@@ -1,0 +1,49 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model Link {
+  id          String  @id @default(cuid())
+  slug        String? @unique
+  destination String
+  permanent   Boolean @default(false)
+
+  author   User   @relation(fields: [authorId], references: [id])
+  authorId String @db.Uuid
+
+  clicks Click[]
+
+  @@index([authorId], name: "author")
+  @@map("links")
+}
+
+model User {
+  id     String  @id @db.Uuid
+  email  String  @unique
+  name   String
+  links  Link[]
+  clicks Click[]
+
+  @@map("users")
+}
+
+model Click {
+  id       String    @id @default(cuid())
+  accessed DateTime? @default(dbgenerated("NOW()")) @db.Timestamptz
+  referer  String?
+  country  String?
+  ip       String?
+
+  link   Link   @relation(fields: [linkId], references: [id])
+  linkId String
+
+  user   User?   @relation(fields: [userId], references: [id])
+  userId String? @db.Uuid
+
+  @@map("clicks")
+}
