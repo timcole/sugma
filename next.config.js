@@ -5,6 +5,13 @@ module.exports = {
   image: {
     domains: ['www.gravatar.com'],
   },
+  redirects: () => [
+    {
+      source: '/',
+      destination: '/admin',
+      permanent: true,
+    },
+  ],
   generateBuildId: async () => {
     const head = (
       await readFile(join(__dirname, '.git', 'HEAD'), 'utf8')
