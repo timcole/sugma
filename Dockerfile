@@ -6,7 +6,9 @@ RUN mkdir -p /usr/src/sugma
 WORKDIR /usr/src/sugma
 
 COPY package*.json /usr/src/sugma/
+COPY prisma ./prisma/
 RUN npm install
+RUN npx prisma generate
 
 COPY . /usr/src/sugma
 
