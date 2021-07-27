@@ -4,12 +4,13 @@ datasource db {
 }
 
 generator client {
-  provider = "prisma-client-js"
+  provider        = "prisma-client-js"
+  previewFeatures = ["selectRelationCount"]
 }
 
 model Link {
   id          String  @id @default(cuid())
-  slug        String? @unique
+  slug        String  @unique
   destination String
   permanent   Boolean @default(false)
 
@@ -18,6 +19,7 @@ model Link {
 
   clicks Click[]
 
+  @@index([slug], name: "link_slug")
   @@index([authorId], name: "author")
   @@map("links")
 }
@@ -29,6 +31,7 @@ model User {
   links  Link[]
   clicks Click[]
 
+  @@index([email], name: "user_email")
   @@map("users")
 }
 
@@ -45,5 +48,8 @@ model Click {
   user   User?   @relation(fields: [userId], references: [id])
   userId String? @db.Uuid
 
+  @@index([country], name: "country_click")
+  @@index([userId], name: "user_click")
+  @@index([linkId], name: "link_click")
   @@map("clicks")
 }

@@ -2,7 +2,7 @@ import { FC, useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
 import styled from 'styled-components';
 import { useIdentity } from './identity';
-import { createHash } from 'crypto';
+import { Avatar } from './avatar';
 
 type Props = {
   clicked?: EventTarget;
@@ -12,7 +12,7 @@ const Header: FC<Props> = ({ clicked }) => {
   const [menuOpen, setMenuOpen] = useState(false);
   const menuButton = useRef<HTMLImageElement>(null);
   const avatarMenu = useRef<HTMLDivElement>(null);
-  const me = useIdentity();
+  const [me] = useIdentity();
 
   useEffect(() => {
     if (avatarMenu.current === null || menuButton.current === null)
@@ -54,10 +54,8 @@ const Header: FC<Props> = ({ clicked }) => {
           </Icon>
           <Avatar
             ref={menuButton}
-            src={`https://www.gravatar.com/avatar/${createHash('md5')
-              .update(me.email)
-              .digest('hex')}?s=50`}
-            alt={`${me.name}'s avatar`}
+            email={me.email}
+            name={me.name}
             onClick={() => setMenuOpen(!menuOpen)}
           />
           {menuOpen && (
@@ -103,7 +101,7 @@ const Brand = styled.div`
 const Nav = styled.nav`
   display: flex;
   flex: 2;
-  max-width: 1000px;
+  max-width: 1280px;
   padding: 0 8px;
   border-bottom: 1px solid var(--header_active);
 
@@ -143,13 +141,6 @@ const User = styled.div`
 const Icon = styled.svg`
   padding: 7px;
   margin-right: 25px;
-`;
-
-const Avatar = styled.img`
-  height: 36px;
-  border: 1px solid var(--header_active);
-  border-radius: 50%;
-  color: var(--header_text);
 `;
 
 const AvatarMenu = styled.div`

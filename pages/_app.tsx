@@ -8,6 +8,7 @@ const GlobalStyle = createGlobalStyle`
   :root {
     --background_100: #E5E5E5;
     --background_200: #FFFFFF;
+    --background_300: #F9F9F9;
     --header_100: #3B3A47;
     --header_text: #FFFFFF;
     --content_text: #1A1A1A;
@@ -19,6 +20,7 @@ const GlobalStyle = createGlobalStyle`
     :root {
       --background_100: #191F26;
       --background_200: #1D222B;
+      --background_300: #1A1E26;
       --header_100: #21272F;
       --header_text: #FFFFFF;
       --content_text: #FFFFFF;

@@ -6,15 +6,16 @@ import {
 import { Section } from 'components/section';
 import prisma from 'lib/db';
 import { AccessMiddleware } from 'lib/access';
+import styled from 'styled-components';
 
 const Redirect: NextPage<
   InferGetServerSidePropsType<typeof getServerSideProps>
-> = ({ link, headers }) => {
+> = ({ link }) => {
   return (
     <Section>
-      Redirecting...
-      <pre>{JSON.stringify(link, null, 2)}</pre>
-      <pre>{JSON.stringify(headers, null, 2)}</pre>
+      <RedirectLink href={link.destination}>
+        Redirecting to <b>{new URL(link.destination).host}</b>...
+      </RedirectLink>
     </Section>
   );
 };
@@ -32,30 +33,35 @@ export const getServerSideProps: GetServerSideProps = async ({
     },
   },
 }) => {
-  const link = await prisma.link.findUnique({
-    where: { slug: slug as string },
-    select: { id: true, destination: true, permanent: true },
-  });
+  const [link, user] = await Promise.all([
+    prisma.link.findUnique({
+      where: { slug: slug as string },
+      select: { id: true, destination: true, permanent: true },
+    }),
+    AccessMiddleware(host, cookies.CF_Authorization).catch(() => null),
+  ]);
   if (!link) return { notFound: true };
 
-  const user = await AccessMiddleware(host, cookies.CF_Authorization).catch(
-    () => null,
-  );
-  await prisma.click
-    .create({
-      data: {
-        referer,
-        // Don't log IP if they're not logged in and DNT header
-        ip: !user && dnt === '1' ? '' : (ip as string),
-        country: country as string,
-        linkId: link.id,
-        userId: user?.sub,
-      },
-    })
-    .then(console.log)
-    .catch(console.error);
+  await prisma.click.create({
+    data: {
+      referer,
+      // Don't log IP if they're not logged in and DNT header
+      ip: !user && dnt === '1' ? '' : (ip as string),
+      country: country as string,
+      linkId: link.id,
+      userId: user?.sub,
+    },
+  });
 
-  return { props: { link } };
+  return {
+    props: { link },
+    redirect: { destination: link.destination, permanent: link.permanent },
+  };
 };
 
 export default Redirect;
+
+const RedirectLink = styled.a`
+  text-decoration: none;
+  color: inherit;
+`;

@@ -18,16 +18,27 @@ export async function AccessMiddleware(
   return Promise.resolve(access as AccessPayload);
 }
 
+const cacheCerts: { lastUpdated: Date; certs: AccessCerts } = {
+  lastUpdated: null,
+  certs: null,
+};
+
 async function isValidJwt(
   host: string,
   token: string,
 ): Promise<boolean | AccessPayload> {
-  const certs: AccessCerts = await fetch(
-    `https://${host}/cdn-cgi/access/certs`,
-  ).then((data) => data.json());
+  if (
+    !cacheCerts.certs ||
+    new Date().getTime() - cacheCerts.lastUpdated.getTime() >= 3600000
+  ) {
+    cacheCerts.lastUpdated = new Date();
+    cacheCerts.certs = await fetch(`https://${host}/cdn-cgi/access/certs`).then(
+      (data) => data.json(),
+    );
+  }
 
   const decoded = decode(token, { complete: true });
-  const key = certs?.keys?.filter(
+  const key = cacheCerts.certs?.keys?.filter(
     ({ kid }: { kid: string }) => kid === decoded.header.kid,
   );
   const pem = key.length ? jwkToPem(key[0]) : '';

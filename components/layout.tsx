@@ -3,7 +3,6 @@ import Head from 'next/head';
 import styled from 'styled-components';
 
 import Header from 'components/header';
-import { Section } from 'components/section';
 
 export const Layout: FunctionComponent = ({ children }) => {
   const [menuClicked, setMenuClicked] = useState<EventTarget>();
@@ -56,17 +55,14 @@ const Body = styled.div`
     transform-origin: top left;
     transform: skewY(-3deg);
   }
-
-  ${Section} {
-    margin: 15px auto;
-    width: calc(100% - 60px);
-    max-width: 1000px;
-    padding: 15px;
-  }
 `;
 
 const Content = styled.div`
   min-height: 200px;
+  margin: 0 auto;
+  width: calc(100% - 60px);
+  max-width: 1280px;
+  padding: 15px;
 `;
 
 const Footer = styled.div`
