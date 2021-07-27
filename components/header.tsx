@@ -3,6 +3,8 @@ import Link from 'next/link';
 import styled from 'styled-components';
 import { useIdentity } from './identity';
 import { Avatar } from './avatar';
+import { useModal } from './modal';
+import NewLink from './newLink';
 
 type Props = {
   clicked?: EventTarget;
@@ -13,6 +15,7 @@ const Header: FC<Props> = ({ clicked }) => {
   const menuButton = useRef<HTMLImageElement>(null);
   const avatarMenu = useRef<HTMLDivElement>(null);
   const [me] = useIdentity();
+  const setModal = useModal();
 
   useEffect(() => {
     if (avatarMenu.current === null || menuButton.current === null)
@@ -36,7 +39,18 @@ const Header: FC<Props> = ({ clicked }) => {
           <Link href="/" passHref>
             <NavItem className="active">Dashboard</NavItem>
           </Link>
-          <NavItem className="new">New Link</NavItem>
+          <NavItem
+            className="new"
+            onClick={(e) =>
+              setModal({
+                btn: e.target,
+                title: 'Create a new short link',
+                component: NewLink,
+              })
+            }
+          >
+            New Link
+          </NavItem>
         </Nav>
       )}
       {me && (

@@ -3,12 +3,13 @@ import Head from 'next/head';
 import styled from 'styled-components';
 
 import Header from 'components/header';
+import ModalProvider from './modal';
 
 export const Layout: FunctionComponent = ({ children }) => {
-  const [menuClicked, setMenuClicked] = useState<EventTarget>();
+  const [globalClick, setGlobalClick] = useState<EventTarget>();
 
   return (
-    <Body onClick={(e) => setMenuClicked(e.target)}>
+    <Body onClick={(e) => setGlobalClick(e.target)}>
       <Head>
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <meta httpEquiv="X-UA-Compatible" content="ie=edge" />
@@ -24,12 +25,14 @@ export const Layout: FunctionComponent = ({ children }) => {
           rel="stylesheet"
         />
       </Head>
-      <Header clicked={menuClicked} />
-      <Content>{children}</Content>
-      <Footer>
-        Copyright &copy; 1997-{new Date().getFullYear()} - Timothy Cole - All
-        Rights Reserved.
-      </Footer>
+      <ModalProvider clicked={globalClick}>
+        <Header clicked={globalClick} />
+        <Content>{children}</Content>
+        <Footer>
+          Copyright &copy; 1997-{new Date().getFullYear()} - Timothy Cole - All
+          Rights Reserved.
+        </Footer>
+      </ModalProvider>
     </Body>
   );
 };
@@ -46,7 +49,7 @@ const Body = styled.div`
     width: 100%;
     height: 100%;
     content: '';
-    background-color: var(--header_100);
+    background-color: rgb(var(--header_100));
     top: 0;
     right: 0;
     bottom: 0;

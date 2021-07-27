@@ -60,7 +60,7 @@ const StyledTable = styled(Section)`
 `;
 
 const StyledHead = styled.div`
-  min-width: 750px;
+  min-width: 850px;
   display: flex;
   background: var(--background_300);
   text-transform: uppercase;
@@ -74,7 +74,7 @@ const StyledHead = styled.div`
 `;
 
 const StyledBody = styled.div`
-  min-width: 750px;
+  min-width: 850px;
   display: flex;
   text-align: left;
   padding: 5px 0;
@@ -88,7 +88,7 @@ const StyledBody = styled.div`
 
 const StyledCol = styled.div`
   display: flex;
-  flex: 1;
+  flex: 0.75;
   margin: 0 15px;
   font-size: 0.9em;
   align-items: center;
@@ -106,11 +106,19 @@ const StyledCol = styled.div`
     justify-content: center;
   }
 
+  @media only screen and (max-width: 1050px) {
+    flex: 0.9;
+  }
+
   &:nth-child(2) {
     flex: 5;
+
+    @media only screen and (max-width: 975px) {
+      flex: 4;
+    }
   }
 
   &:nth-child(3) {
-    flex: 2;
+    flex: 1.25;
   }
 `;

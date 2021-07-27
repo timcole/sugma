@@ -6,10 +6,10 @@ import { createGlobalStyle } from 'styled-components';
 
 const GlobalStyle = createGlobalStyle`
   :root {
+    --header_100: 59, 58, 71;
     --background_100: #E5E5E5;
     --background_200: #FFFFFF;
     --background_300: #F9F9F9;
-    --header_100: #3B3A47;
     --header_text: #FFFFFF;
     --content_text: #1A1A1A;
     --header_active: #4B4A56;
@@ -18,10 +18,10 @@ const GlobalStyle = createGlobalStyle`
 
   @media (prefers-color-scheme: dark) {
     :root {
+      --header_100: 33, 39, 47;
       --background_100: #191F26;
       --background_200: #1D222B;
       --background_300: #1A1E26;
-      --header_100: #21272F;
       --header_text: #FFFFFF;
       --content_text: #FFFFFF;
       --header_active: #4A4E56;
