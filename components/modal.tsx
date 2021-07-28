@@ -6,6 +6,7 @@ import {
   ReactNode,
   useEffect,
   useRef,
+  useCallback,
 } from 'react';
 import styled from 'styled-components';
 
@@ -15,7 +16,10 @@ type Modal = {
   component: FC;
 };
 
-export const ModalContext = createContext<(model: Modal | null) => void>(null);
+export const ModalContext = createContext<{
+  closeModal: () => void;
+  setModal: (model: Modal | null) => void;
+}>(null);
 export const useModal = () => useContext(ModalContext);
 
 type Props = {
@@ -38,7 +42,7 @@ const ModalProvider: FC<Props> = ({ children, clicked }) => {
       parent = parent.parentElement;
       if (parent === modalRef.current) hasClickedIn = true;
     }
-    if (!hasClickedIn) setOut(true);
+    if (!hasClickedIn) closeModal();
   }, [clicked, out]);
 
   useEffect(() => {
@@ -49,16 +53,22 @@ const ModalProvider: FC<Props> = ({ children, clicked }) => {
       }, 150);
   }, [out]);
 
+  const closeModal = useCallback(() => {
+    setOut(true);
+  }, [out]);
+
   return (
-    <ModalContext.Provider value={setModal}>
+    <ModalContext.Provider value={{ closeModal, setModal }}>
       {children}
       {modal && (
         <Modal ref={modalRef} className={out ? 'out' : ''}>
-          <div className="content">
+          <div className="group">
+            <div className="content">
+              <modal.component />
+            </div>
             <div className="title">
               <p>{modal.title}</p>
             </div>
-            <modal.component />
           </div>
         </Modal>
       )}
@@ -80,16 +90,14 @@ const Modal = styled.div`
 
   &.out {
     animation: bgOut 150ms linear;
-    div.content {
+    div.group {
       animation: topOut 150ms linear;
     }
   }
 
   div.title {
     display: flex;
-    position: absolute;
     width: 100%;
-    bottom: 0;
     background: var(--background_300);
     text-transform: uppercase;
     font-size: 0.8em;
@@ -102,7 +110,12 @@ const Modal = styled.div`
   }
 
   div.content {
-    top: 0;
+    display: flex;
+    flex: 1;
+  }
+
+  div.group {
+    margin-top: 0;
     max-height: 300px;
     position: relative;
     width: 100%;
@@ -114,6 +127,8 @@ const Modal = styled.div`
     border-radius: 0 0 10px 10px;
     box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.25);
     animation: top 150ms linear;
+    display: flex;
+    flex-direction: column;
   }
 
   @keyframes bg {
@@ -136,19 +151,19 @@ const Modal = styled.div`
 
   @keyframes top {
     0% {
-      top: -300px;
+      margin-top: -300px;
     }
     100% {
-      top: 0;
+      margin-top: 0;
     }
   }
 
   @keyframes topOut {
     0% {
-      top: 0;
+      margin-top: 0;
     }
     100% {
-      top: -300px;
+      margin-top: -300px;
     }
   }
 `;

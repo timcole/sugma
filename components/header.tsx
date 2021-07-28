@@ -2,8 +2,9 @@ import { FC, useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
 import styled from 'styled-components';
 import { useIdentity } from './identity';
-import { Avatar } from './avatar';
 import { useModal } from './modal';
+import { Avatar } from './avatar';
+import { Button } from './button';
 import NewLink from './newLink';
 
 type Props = {
@@ -14,8 +15,8 @@ const Header: FC<Props> = ({ clicked }) => {
   const [menuOpen, setMenuOpen] = useState(false);
   const menuButton = useRef<HTMLImageElement>(null);
   const avatarMenu = useRef<HTMLDivElement>(null);
-  const [me] = useIdentity();
-  const setModal = useModal();
+  const { identity } = useIdentity();
+  const { setModal } = useModal();
 
   useEffect(() => {
     if (avatarMenu.current === null || menuButton.current === null)
@@ -34,12 +35,14 @@ const Header: FC<Props> = ({ clicked }) => {
       <Brand>
         <h3 title="🥜 Short URLs Get More Attention">🥜 SUGMA</h3>
       </Brand>
-      {me && (
+      {identity && (
         <Nav>
-          <Link href="/" passHref>
-            <NavItem className="active">Dashboard</NavItem>
-          </Link>
-          <NavItem
+          <Button className="active">
+            <Link href="/admin" passHref>
+              <a>Dashboard</a>
+            </Link>
+          </Button>
+          <Button
             className="new"
             onClick={(e) =>
               setModal({
@@ -50,10 +53,10 @@ const Header: FC<Props> = ({ clicked }) => {
             }
           >
             New Link
-          </NavItem>
+          </Button>
         </Nav>
       )}
-      {me && (
+      {identity && (
         <User>
           <Icon
             height="22"
@@ -68,8 +71,8 @@ const Header: FC<Props> = ({ clicked }) => {
           </Icon>
           <Avatar
             ref={menuButton}
-            email={me.email}
-            name={me.name}
+            email={identity.email}
+            name={identity.name}
             onClick={() => setMenuOpen(!menuOpen)}
           />
           {menuOpen && (
@@ -125,24 +128,13 @@ const Nav = styled.nav`
     flex-basis: 100%;
     margin-top: 15px;
   }
-`;
 
-const NavItem = styled.a`
-  display: inline-block;
-  padding: 8px 12px;
-  font-size: 0.9em;
-  border-radius: 6px;
-  color: var(--header_text);
-  text-decoration: none;
-  margin: 2px 3px 10px 3px;
+  ${Button} {
+    margin: 2px 3px 10px 3px;
 
-  &.active {
-    background: var(--header_active);
-  }
-
-  &.new {
-    margin-left: auto;
-    background: var(--accent);
+    &.new {
+      margin-left: auto;
+    }
   }
 `;
 

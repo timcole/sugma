@@ -5,15 +5,26 @@ import {
 } from 'next';
 import { AccessMiddleware, getIdentity } from 'lib/access';
 import prisma from 'lib/db';
-import { useEffect } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { useIdentity } from 'components/identity';
 import Links from 'components/links';
 
 const Admin: NextPage<InferGetServerSidePropsType<typeof getServerSideProps>> =
-  ({ links, identity }) => {
-    const [, setIdentity] = useIdentity();
+  ({ links: ssrLinks, identity }) => {
+    const [links, setLinks] = useState(ssrLinks);
+    const { setIdentity, events } = useIdentity();
+
+    const addLink = useCallback(
+      (link) => {
+        setLinks((oldLinks) => [...oldLinks, link]);
+        events.once('newLink', (link) => addLink(link));
+      },
+      [links],
+    );
+
     useEffect(() => {
       setIdentity(identity);
+      events.once('newLink', (link) => addLink(link));
     }, []);
 
     return (

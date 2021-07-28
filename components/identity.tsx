@@ -1,3 +1,4 @@
+import EventEmitter from 'events';
 import {
   FC,
   useEffect,
@@ -5,32 +6,32 @@ import {
   createContext,
   useContext,
   ReactNode,
-  useCallback,
 } from 'react';
 import { Identity } from 'types/identity';
 
 export const IdentityContext =
-  createContext<[Identity | null, (user: Identity) => void]>(null);
+  createContext<{
+    identity: Identity | null;
+    setIdentity: (user: Identity) => void;
+    events: EventEmitter;
+  }>(null);
 export const useIdentity = () => useContext(IdentityContext);
 
 const IdentityProvider: FC<{ children: ReactNode }> = ({ children }) => {
-  const [user, setUser] = useState<Identity | null>(null);
-
-  const setIdentity = useCallback((identity) => {
-    setUser(identity);
-  }, []);
+  const [identity, setIdentity] = useState<Identity | null>(null);
+  const [events] = useState(new EventEmitter());
 
   useEffect(() => {
     fetch(`/api/me`)
       .then((data) => data.json())
       .then((data) => {
-        if (!data.id) setUser(null);
-        else setUser(data);
+        if (!data.id) setIdentity(null);
+        else setIdentity(data);
       });
   }, []);
 
   return (
-    <IdentityContext.Provider value={[user, setIdentity]}>
+    <IdentityContext.Provider value={{ identity, setIdentity, events }}>
       {children}
     </IdentityContext.Provider>
   );

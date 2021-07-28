@@ -88,7 +88,7 @@ const StyledBody = styled.div`
 
 const StyledCol = styled.div`
   display: flex;
-  flex: 0.75;
+  flex: 0.9;
   margin: 0 15px;
   font-size: 0.9em;
   align-items: center;
@@ -104,10 +104,6 @@ const StyledCol = styled.div`
 
   &.center {
     justify-content: center;
-  }
-
-  @media only screen and (max-width: 1050px) {
-    flex: 0.9;
   }
 
   &:nth-child(2) {

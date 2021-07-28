@@ -14,6 +14,7 @@ const GlobalStyle = createGlobalStyle`
     --content_text: #1A1A1A;
     --header_active: #4B4A56;
     --accent: #7594E1;
+    --error: #922e24;
   }
 
   @media (prefers-color-scheme: dark) {
